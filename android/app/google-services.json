@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "2460746938",
+    "project_id": "cv-project290m",
+    "storage_bucket": "cv-project290m.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2460746938:android:5e63736c5282fbe2352e83",
+        "android_client_info": {
+          "package_name": "cv_project.almomani.cv_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhOd0kQ5UaAai6bBvQvEIdUi3JAFsDS1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
