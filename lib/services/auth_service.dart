@@ -5,19 +5,35 @@ class AuthService {
 
   Stream<User?> get user => _auth.authStateChanges();
 
-  Future<UserCredential?> signIn(String email, String password) async {
+  Future<String?> signIn(String email, String password) async {
     try {
-      return await _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email.trim(), password: password);
+      return null; // نجاح
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found': return 'لا يوجد حساب بهذا البريد الإلكتروني';
+        case 'wrong-password': return 'كلمة المرور غير صحيحة';
+        case 'invalid-email': return 'صيغة البريد الإلكتروني غير صحيحة';
+        case 'user-disabled': return 'هذا الحساب معطل';
+        default: return 'خطأ في تسجيل الدخول: ${e.message}';
+      }
     } catch (e) {
-      return null;
+      return 'حدث خطأ غير متوقع';
     }
   }
 
-  Future<UserCredential?> register(String email, String password) async {
+  Future<String?> register(String email, String password) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password);
+      return null; // نجاح
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use': return 'هذا البريد الإلكتروني مستخدم بالفعل';
+        case 'weak-password': return 'كلمة المرور ضعيفة جداً';
+        default: return 'خطأ في التسجيل: ${e.message}';
+      }
     } catch (e) {
-      return null;
+      return 'حدث خطأ غير متوقع';
     }
   }
 
