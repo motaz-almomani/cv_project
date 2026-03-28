@@ -5,11 +5,16 @@ class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> addCV(CVModel cv) async {
-    await _db.collection('cvs').add(cv.toMap());
+    final map = cv.toMap();
+    map['createdAt'] = FieldValue.serverTimestamp();
+    map['updatedAt'] = FieldValue.serverTimestamp();
+    await _db.collection('cvs').add(map);
   }
 
   Future<void> updateCV(String docId, CVModel cv) async {
-    await _db.collection('cvs').doc(docId).update(cv.toMap());
+    final map = cv.toMap();
+    map['updatedAt'] = FieldValue.serverTimestamp();
+    await _db.collection('cvs').doc(docId).update(map);
   }
 
   Future<void> deleteCV(String docId) async {
@@ -22,7 +27,13 @@ class DatabaseService {
         .where('userId', isEqualTo: uid)
         .snapshots()
         .map((snap) {
-      return snap.docs.map((doc) => CVModel.fromMap(doc.data(), doc.id)).toList();
+      final list = snap.docs.map((doc) => CVModel.fromMap(doc.data(), doc.id)).toList();
+      list.sort((a, b) {
+        final t = b.updatedAtMs.compareTo(a.updatedAtMs);
+        if (t != 0) return t;
+        return b.createdAtMs.compareTo(a.createdAtMs);
+      });
+      return list;
     });
   }
 }

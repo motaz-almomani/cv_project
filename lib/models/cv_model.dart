@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+/// PDF export layout: [modern], [classic], or [minimal].
 class CVModel {
   String id;
   String userId;
   String cvName;
+  /// Layout id for PDF export.
+  String pdfTemplate;
+  int createdAtMs;
+  int updatedAtMs;
   String fullName;
   String jobTitle;
   String email;
@@ -21,6 +28,9 @@ class CVModel {
     required this.id,
     required this.userId,
     required this.cvName,
+    this.pdfTemplate = 'modern',
+    this.createdAtMs = 0,
+    this.updatedAtMs = 0,
     required this.fullName,
     required this.jobTitle,
     required this.email,
@@ -41,6 +51,7 @@ class CVModel {
     return {
       'userId': userId,
       'cvName': cvName,
+      'pdfTemplate': pdfTemplate,
       'fullName': fullName,
       'jobTitle': jobTitle,
       'email': email,
@@ -58,11 +69,23 @@ class CVModel {
     };
   }
 
+  static int _timestampToMs(dynamic v) {
+    if (v == null) return 0;
+    if (v is Timestamp) return v.millisecondsSinceEpoch;
+    if (v is int) return v;
+    return 0;
+  }
+
   factory CVModel.fromMap(Map<String, dynamic> map, String documentId) {
+    final template = map['pdfTemplate'] as String? ?? 'modern';
+    final safeTemplate = ['modern', 'classic', 'minimal'].contains(template) ? template : 'modern';
     return CVModel(
       id: documentId,
       userId: map['userId'] ?? '',
       cvName: map['cvName'] ?? 'Untitled CV',
+      pdfTemplate: safeTemplate,
+      createdAtMs: _timestampToMs(map['createdAt']),
+      updatedAtMs: _timestampToMs(map['updatedAt']),
       fullName: map['fullName'] ?? '',
       jobTitle: map['jobTitle'] ?? '',
       email: map['email'] ?? '',
