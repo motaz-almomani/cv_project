@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Code and app review checklist for MR.CV — Firebase, Play policy, production readiness." />
+  <title>Code &amp; App Review Checklist — MR.CV</title>
+  <style>
+    :root { --accent: #0ea5e9; --bg: #f8fafc; --text: #0f172a; --muted: #64748b; --card: #fff; --border: #e2e8f0; --ok: #059669; --warn: #d97706; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif; margin: 0; color: var(--text); background: var(--bg); line-height: 1.65; font-size: 16px; }
+    .wrap { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    header { margin-bottom: 1rem; }
+    h1 { font-size: 1.65rem; font-weight: 700; margin: 0 0 0.5rem; }
+    .lead { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; }
+    nav a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    h2 { font-size: 1.2rem; margin: 2rem 0 0.65rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+    h2:first-of-type { border-top: none; padding-top: 0; }
+    h3 { font-size: 1.05rem; margin: 1rem 0 0.45rem; color: #334155; }
+    p, li { margin: 0 0 0.55rem; }
+    ul { padding-left: 1.25rem; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { padding-left: 1.6rem; position: relative; margin-bottom: 0.5rem; }
+    .checklist li::before { content: "☐"; position: absolute; left: 0; color: var(--muted); }
+    code { font-size: 0.88em; background: #f1f5f9; padding: 0.12em 0.4em; border-radius: 4px; }
+    .callout { border-left: 4px solid var(--accent); padding: 0.75rem 1rem; margin: 1rem 0; background: var(--card); border-radius: 0 8px 8px 0; font-size: 0.95rem; }
+    .callout.warn { border-left-color: var(--warn); background: #fffbeb; }
+    .callout.ok { border-left-color: var(--ok); background: #ecfdf5; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin: 0.75rem 0; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    th, td { text-align: left; padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); }
+    th { background: #f1f5f9; width: 30%; }
+    tr:last-child td { border-bottom: none; }
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted); }
+    a { color: var(--accent); }
+    .muted { color: var(--muted); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Code &amp; app review checklist</h1>
+      <p class="lead">Evidence-based notes for MR.CV (<code>cv_project</code>): Firebase Auth email/password, Firestore collection <code>cvs</code> with <code>userId</code>, local preferences via SharedPreferences — as implemented in this repository snapshot.</p>
+    </header>
+
+    <nav aria-label="Site">
+      <a href="index.html">Home</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="data-safety.html">Data Safety</a>
+      <a href="delete-account.html">Delete Account</a>
+      <a href="code-review-checklist.html">Code Review</a>
+    </nav>
+
+    <p>This section supports Google Play readiness and engineering hygiene; it is not legal advice.</p>
+
+    <h2 id="firebase">Firebase &amp; security practices</h2>
+
+    <h3>Firestore Security Rules</h3>
+    <div class="callout warn">
+      <strong>Critical:</strong> This repo does not include committed <code>firestore.rules</code>. You must deploy rules so that only authenticated users read/write documents they own — for example <code>cvs</code> documents where <code>request.auth.uid == resource.data.userId</code> on read/update/delete and the same check on create. Without rules (or with defaults), data can be exposed.
+    </div>
+    <ul>
+      <li>Deny all by default; allow <code>cvs</code> CRUD only when <code>userId</code> matches <code>request.auth.uid</code>.</li>
+      <li>Review indexes if you use compound queries; your app queries <code>cvs</code> where <code>userId == uid</code> (may need a composite index at scale).</li>
+      <li>Enable Firebase App Check for Android once rules are stable, to reduce abuse from non-app clients.</li>
+    </ul>
+
+    <h3>Firebase Authentication</h3>
+    <ul>
+      <li>Email/password is implemented via <code>AuthService</code>; errors are surfaced user-friendly.</li>
+      <li><strong class="muted">Strength:</strong> Password changes use <code>reauthenticateWithCredential</code> — good practice.</li>
+      <li>Consider enforcing email verification for sensitive flows; the app exposes <code>sendEmailVerification</code> — ensure product copy explains verification status.</li>
+      <li><strong>No in-app account deletion</strong> in current code paths — aligns with documenting email-based deletion, but Play increasingly expects accessible account deletion UX; planning an in-app path is recommended.</li>
+    </ul>
+
+    <h3>Secrets &amp; configuration</h3>
+    <ul>
+      <li><code>google-services.json</code> / <code>firebase_options.dart</code> contain public client identifiers — acceptable in client apps; protect production API keys for any callable backend separately.</li>
+      <li><code>cloud_functions</code> is listed in <code>pubspec.yaml</code> but unused in Dart grep — remove the dependency if you are not deploying functions, to shrink attack surface and dependencies.</li>
+    </ul>
+
+    <h2 id="auth-review">Authentication security review (summary)</h2>
+    <table>
+      <tbody>
+        <tr><th>Transport</th><td>Firebase SDK uses TLS — OK.</td></tr>
+        <tr><th>Password policy</th><td>Firebase enforces minimum length (e.g. 6); encourage stronger passwords in UX copy.</td></tr>
+        <tr><th>Session</th><td>Auth state via <code>authStateChanges</code> — standard.</td></tr>
+        <tr><th>Gaps</th><td>No visible rate limiting in client (rely on Firebase abuse protections); critical gap is Firestore rules if not deployed.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="firestore-rules">Firestore rules snippet (recommended direction)</h2>
+    <div class="callout">
+      Replace with tested rules — example pattern only:<br /><br />
+      <code>match /cvs/{docId} { allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid; allow create: if request.auth != null && request.resource.data.userId == request.auth.uid; }</code>
+    </div>
+
+    <h2 id="play-risks">Common Google Play policy risks (for this app type)</h2>
+    <ul>
+      <li><strong>Data safety:</strong> Declarations must match actual SDK/data flows (Auth, Firestore, any future Analytics/Crashlytics).</li>
+      <li><strong>Account deletion:</strong> Provide a discoverable process (URL + in-app path when possible) consistent with <a href="https://support.google.com/googleplay/android-developer/answer/11926878" rel="noopener noreferrer">Play’s account deletion requirements</a>.</li>
+      <li><strong>Permissions:</strong> Only request permissions you use; document storage if you add file pickers or exports.</li>
+      <li><strong>Deceptive behaviour / metadata:</strong> Store listing, screenshots, and “AI” claims must match functionality (current analysis appears to be local scoring, not a remote model — keep listing accurate).</li>
+    </ul>
+
+    <h2 id="production">Production readiness improvements</h2>
+    <ul>
+      <li>Ship and version-control Firestore rules and deploy them in CI.</li>
+      <li>Add automated tests for <code>DatabaseService</code> with fake Firestore or rules emulator.</li>
+      <li>Add in-app “Delete account” with server-side or batch delete of <code>cvs</code> by <code>userId</code>, then <code>FirebaseAuth.currentUser!.delete()</code> after re-auth.</li>
+      <li>Privacy policy URL and data deletion URL in Play Console must match live pages (verify contact email is current).</li>
+      <li>Optional: Firebase Crashlytics for stability; if added, update privacy policy and Data safety.</li>
+    </ul>
+
+    <h2 id="compliance-gaps">Missing or weak compliance areas to close</h2>
+    <ul>
+      <li>Developer name (Developer Hub 899) and contact email (pederoereedeos@gmail.com) accurate on policy pages.</li>
+      <li>Firestore rules proof (tests or manual verification in Firebase console).</li>
+      <li>Clear user-facing path for account deletion (Play expectation).</li>
+      <li>If you target EU/UK users: record of processing, DPA with Google as processor, and clarity on transfer mechanisms (standard contractual clauses via Google/Firebase docs).</li>
+    </ul>
+
+    <h2 id="checklist">Pre-publish checklist (tick in your tracker)</h2>
+    <ul class="checklist">
+      <li>Privacy policy URL live; matches app behaviour and Data safety form.</li>
+      <li>Account deletion instructions URL live; support inbox monitored.</li>
+      <li>Firestore Security Rules deployed and manually tested (another user cannot read others’ CVs).</li>
+      <li>Data safety form in Play Console completed; “Data types” match actual collection.</li>
+      <li>App signing, version code, and target API level meet current Play requirements.</li>
+      <li>Content rating questionnaire completed accurately.</li>
+      <li>Ads declaration: “No” if you do not show ads; update if you add mediation.</li>
+      <li>Store listing: no misleading “AI” or feature claims vs. actual app.</li>
+      <li>Remove unused dependencies (e.g. Cloud Functions if unused).</li>
+      <li>Internal test track build smoke-tested: sign up, create CV, sign out, sign in, export PDF if applicable.</li>
+    </ul>
+
+    <footer>
+      <p>Last updated: 28 April 2026 • <a href="index.html">Home</a></p>
+    </footer>
+  </div>
+</body>
+</html>

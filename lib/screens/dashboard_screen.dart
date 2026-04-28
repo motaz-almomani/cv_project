@@ -3,7 +3,6 @@ import 'package:cv_project/models/cv_model.dart';
 import 'package:cv_project/screens/edit_cv_screen.dart';
 import 'package:cv_project/screens/profile_screen.dart';
 import 'package:cv_project/screens/settings_screen.dart';
-import 'package:cv_project/services/ai_service.dart';
 import 'package:cv_project/services/auth_service.dart';
 import 'package:cv_project/services/database_service.dart';
 import 'package:cv_project/services/pdf_service.dart';
@@ -26,85 +25,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   static const _surfaceCard = Color(0xFFF8FAFC);
   static const _accent = Color(0xFF0EA5E9);
   static const _deep = Color(0xFF0F172A);
-
-  void _showAnalysisDialog(BuildContext context, CVModel cv) async {
-    final aiService = Provider.of<AIService>(context, listen: false);
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator(color: _accent)),
-    );
-
-    try {
-      final result = await aiService.analyzeCV(cv);
-      if (!context.mounted) return;
-      Navigator.pop(context);
-
-      final int score = result['score'] is int ? result['score'] as int : int.tryParse('${result['score']}') ?? 0;
-      final String feedback = result['feedback']?.toString() ?? '';
-      final List<dynamic> tips = result['tips'] ?? [];
-
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => FadeScaleAnimation(
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              backgroundColor: _surfaceCard,
-              title: const Text(
-                'CV analysis',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: _deep, fontWeight: FontWeight.bold),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 72,
-                      height: 72,
-                      child: CircularProgressIndicator(
-                        value: score / 100,
-                        strokeWidth: 6,
-                        color: _accent,
-                        backgroundColor: Colors.grey[200],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text('$score%', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: _deep)),
-                    const SizedBox(height: 8),
-                    Text(feedback, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15)),
-                    const SizedBox(height: 16),
-                    const Divider(),
-                    const Text('Improvement tips', style: TextStyle(fontWeight: FontWeight.bold, color: _deep)),
-                    const SizedBox(height: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: tips.map<Widget>((tip) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Text('• $tip', style: const TextStyle(fontSize: 14)),
-                          )).toList(),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK', style: TextStyle(color: _deep, fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Analysis failed: $e')));
-      }
-    }
-  }
 
   String _templateLabel(String id) {
     switch (id) {
@@ -413,11 +333,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           icon: const Icon(Icons.picture_as_pdf_rounded, color: Color(0xFFDC2626)),
                                           tooltip: 'Export PDF',
                                           onPressed: () => pdfService.generateAndPrintPDF(cv),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.analytics_outlined, color: _accent),
-                                          tooltip: 'Analyze',
-                                          onPressed: () => _showAnalysisDialog(context, cv),
                                         ),
                                       ],
                                     ],

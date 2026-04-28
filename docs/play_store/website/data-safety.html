@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Data Safety information for MR.CV — mirrors Google Play Data safety declaration fields." />
+  <title>Data Safety — MR.CV</title>
+  <style>
+    :root { --accent: #0ea5e9; --bg: #f8fafc; --text: #0f172a; --muted: #64748b; --card: #fff; --border: #e2e8f0; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif; margin: 0; color: var(--text); background: var(--bg); line-height: 1.65; font-size: 16px; }
+    .wrap { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    header { margin-bottom: 1rem; }
+    h1 { font-size: 1.65rem; font-weight: 700; margin: 0 0 0.5rem; }
+    .lead { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; }
+    nav a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    h2 { font-size: 1.15rem; margin: 1.75rem 0 0.75rem; padding-bottom: 0.35rem; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 1rem; margin: 1rem 0 0.5rem; color: #334155; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 0.75rem 0 1rem; font-size: 0.93rem; }
+    th, td { text-align: left; padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: #f1f5f9; font-weight: 600; width: 32%; }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; margin-right: 0.35rem; }
+    ul { padding-left: 1.25rem; }
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted); }
+    a { color: var(--accent); }
+    .note { background: #f1f5f9; border-left: 4px solid var(--accent); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; font-size: 0.93rem; }
+    code { font-size: 0.88em; background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Data Safety</h1>
+      <p class="lead"><strong>Developer Hub 899</strong> operates MR.CV. This page mirrors how you declare data practices in <strong>Google Play Console → App content → Data safety</strong>. Update both this page and the form if your implementation changes.</p>
+    </header>
+
+    <nav aria-label="Site">
+      <a href="index.html">Home</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="data-safety.html">Data Safety</a>
+      <a href="delete-account.html">Delete Account</a>
+      <a href="code-review-checklist.html">Code Review</a>
+    </nav>
+
+    <p><span class="badge">Collected</span> Data types below are processed by the current app design (Firebase Auth + Firestore + optional local preferences).</p>
+
+    <h2>Overview</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Does the app collect or share user data?</th>
+          <td>Yes — data you provide for account creation and résumé content is stored using Firebase Auth and Cloud Firestore. Treat Firebase/Google as a service provider for hosting and authentication.</td>
+        </tr>
+        <tr>
+          <th>Is all data encrypted in transit?</th>
+          <td>Yes — HTTPS/TLS between the app and Google’s services (standard Firebase SDK behaviour).</td>
+        </tr>
+        <tr>
+          <th>Can users request data deletion?</th>
+          <td>Yes — see <a href="delete-account.html">Account &amp; data deletion</a> and Privacy Policy §6–8.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Data collected</h2>
+
+    <h3>Personal info</h3>
+    <table>
+      <tbody>
+        <tr><th>Name</th><td>Optional display name stored in Firebase user profile.</td></tr>
+        <tr><th>Email address</th><td>Collected for authentication; stored by Firebase Authentication.</td></tr>
+        <tr><th>Other user-generated CV content</th><td>Includes title, bio/summary, job history, education, skills, certificates, links, phone, address, and similar fields you enter into CV forms; stored in Firestore under your user ID.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>App activity &amp; diagnostics (minimal)</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>App interactions / crash logs</th>
+          <td>Not collected by custom code in the baseline description unless you add Analytics or Crashlytics. If you add them, declare them here and in Play Console.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Device or other IDs</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>Firebase user ID (UID)</th>
+          <td>Generated by Firebase Auth to identify your account and link Firestore documents — not an advertising ID.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Purpose of collection (per data type)</h2>
+    <table>
+      <tbody>
+        <tr><th>Account management</th><td>Email, UID, password handling — sign-in, account security, password reset flow (via Firebase).</td></tr>
+        <tr><th>App functionality</th><td>Storing, editing, listing, and exporting résumés; associating CVs with the signed-in account.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Data sharing</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Third parties</th>
+          <td>Firebase / Google operates the authentication and database layer. Data is processed under your Firebase configuration; it is not “sold”. Do not declare unrelated ad-tech sharing unless you integrate it.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Optional: Data uploaded to Firebase (Firestore)</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Cloud storage / database</th>
+          <td>User-provided CV records are stored in <strong>Cloud Firestore</strong> (not Cloud Storage for files in the default code path unless you add it). Declaring “Photos and videos” or “Files” in Play Console is only needed if your shipped app uploads those categories.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Encryption &amp; security (Play-aligned summary)</h2>
+    <ul>
+      <li><strong>In transit:</strong> Firebase client SDKs use encrypted connections.</li>
+      <li><strong>At rest:</strong> Google encrypts Firebase data at rest on its infrastructure.</li>
+      <li><strong>Access control:</strong> Developers must configure Firestore Security Rules so users can access only their own documents (verified by UID).</li>
+    </ul>
+
+    <h2>Data deletion</h2>
+    <ul>
+      <li>Users can request deletion by email — see <a href="delete-account.html">Deletion policy</a>.</li>
+      <li>Firestore documents tied to <code>userId</code> should be deleted when the account is removed (manually, admin script, or Cloud Function).</li>
+      <li>Local-only preferences may remain until app data is cleared or the app is uninstalled.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Play Console checklist:</strong> For each data type you mark as collected, declare purposes (e.g. account management, app functionality), whether collection is optional/required, and whether data is encrypted in transit. This HTML is a drafting aid — the form in Console is authoritative.
+    </div>
+
+    <footer>
+      <p>Last updated: 28 April 2026 • <a href="index.html">Home</a> • Full policy: <a href="privacy-policy.html">Privacy Policy</a></p>
+    </footer>
+  </div>
+</body>
+</html>

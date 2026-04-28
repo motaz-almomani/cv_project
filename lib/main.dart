@@ -3,7 +3,6 @@ import 'package:cv_project/screens/login_screen.dart';
 import 'package:cv_project/services/auth_service.dart';
 import 'package:cv_project/services/database_service.dart';
 import 'package:cv_project/services/cv_analysis_service.dart';
-import 'package:cv_project/services/ai_service.dart';
 import 'package:cv_project/services/pdf_service.dart';
 import 'package:cv_project/services/user_settings_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,7 +36,6 @@ class MyApp extends StatelessWidget {
         Provider<UserSettingsService>(create: (_) => UserSettingsService(sharedPreferences)),
         Provider<DatabaseService>(create: (_) => DatabaseService()),
         Provider<CVAnalysisService>(create: (_) => CVAnalysisService()),
-        Provider<AIService>(create: (_) => AIService()),
         Provider<PDFService>(create: (_) => PDFService()),
       ],
       child: MaterialApp(

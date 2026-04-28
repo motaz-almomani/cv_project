@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How to delete your MR.CV account and data stored in Firebase." />
+  <title>Account &amp; Data Deletion — MR.CV</title>
+  <style>
+    :root { --accent: #0ea5e9; --bg: #f8fafc; --text: #0f172a; --muted: #64748b; --card: #fff; --border: #e2e8f0; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif; margin: 0; color: var(--text); background: var(--bg); line-height: 1.65; font-size: 16px; }
+    .wrap { max-width: 44rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    header { margin-bottom: 1rem; }
+    h1 { font-size: 1.65rem; font-weight: 700; margin: 0 0 0.5rem; }
+    .lead { color: var(--muted); font-size: 0.95rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; margin-top: 1rem; }
+    nav a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
+    ol.steps li { counter-increment: step; position: relative; padding-left: 2.5rem; margin-bottom: 1rem; min-height: 1.75rem; }
+    ol.steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 1.75rem; height: 1.75rem; background: var(--accent); color: #fff; border-radius: 50%; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    h2 { font-size: 1.2rem; margin: 1.5rem 0 0.65rem; }
+    h3 { font-size: 1.05rem; margin: 1.1rem 0 0.5rem; }
+    .box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    ul { padding-left: 1.25rem; }
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted); }
+    a { color: var(--accent); }
+    code { font-size: 0.9em; background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Account &amp; data deletion</h1>
+      <p class="lead">You can ask us to delete your MR.CV account and the personal data we hold through Firebase Authentication and Cloud Firestore.</p>
+    </header>
+
+    <nav aria-label="Site">
+      <a href="index.html">Home</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="data-safety.html">Data Safety</a>
+      <a href="delete-account.html">Delete Account</a>
+      <a href="code-review-checklist.html">Code Review</a>
+    </nav>
+
+    <section>
+      <h2>How to request deletion</h2>
+      <ol class="steps">
+        <li>Send an email from the <strong>same email address</strong> registered on your MR.CV account.</li>
+        <li>Use subject line: <strong>MR.CV — Account deletion request</strong>.</li>
+        <li>State clearly that you want your <strong>account and associated data deleted</strong>. If you no longer have access to the registered email, describe how we can reasonably verify your identity.</li>
+      </ol>
+      <div class="box">
+        <p><strong>Developer Hub 899</strong></p>
+        <p>Email: <a href="mailto:pederoereedeos@gmail.com">pederoereedeos@gmail.com</a></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What we remove from Firebase</h2>
+      <p>After verifying your request, we will:</p>
+      <ul>
+        <li>Delete your <strong>Firebase Authentication</strong> user record (sign-in identifiers for that account).</li>
+        <li>Delete documents in <strong>Cloud Firestore</strong> tied to your user ID — for MR.CV, résumés are stored under the <code>cvs</code> collection and associated with your <code>userId</code>; these records will be deleted or anonymised according to operational procedure.</li>
+      </ul>
+      <p>Operational backups may retain fragments for a short period pursuant to Firebase/Google retention; after routine backup rotation, deletion is expected to be irreversible beyond standard disaster-recovery timelines.</p>
+    </section>
+
+    <section>
+      <h2>Deletion timeline</h2>
+      <div class="box">
+        <ul>
+          <li><strong>Confirmation:</strong> we aim to acknowledge your request within <strong>7 business days</strong>.</li>
+          <li><strong>Completion:</strong> we aim to complete account and primary data deletion within <strong>30 days</strong> of verification, unless a legal exception applies or additional verification is needed.</li>
+        </ul>
+      </div>
+      <p>Complex or disputed requests may require additional time — we will inform you.</p>
+    </section>
+
+    <section>
+      <h2>Deletion on your device</h2>
+      <p>Uninstalling the app removes locally stored preferences on most devices. Clearing app storage in Android settings achieves the same. This does not delete remote server data unless you delete your account or request deletion.</p>
+    </section>
+
+    <section>
+      <h2>In-app deletion (recommended product improvement)</h2>
+      <div class="box">
+        <p>Google Play’s account deletion policy generally expects developers to provide an in-app pathway or a straightforward web/deep link where feasible. MR.CV’s baseline release described for this documentation may rely on email-based deletion unless you ship an in-account “Delete my account” action (calling Firebase Auth <code>delete()</code> plus cascading Firestore cleanup). Prefer adding in-app deletion and linking to this URL from Help/Settings.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Confirmation process</h2>
+      <p>We verify ownership by confirming control of the account email or other reasonable verification. After deletion, we may send one final acknowledgment to the requesting address.</p>
+    </section>
+
+    <footer>
+      <p>Last updated: 28 April 2026 • <a href="index.html">Home</a> • <a href="privacy-policy.html">Privacy Policy</a></p>
+    </footer>
+  </div>
+</body>
+</html>

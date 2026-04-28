@@ -1,0 +1,20 @@
+MR.CV — Google Sites / static host configuration
+================================================
+
+Publisher: Developer Hub 899
+Contact email: pederoereedeos@gmail.com
+
+1. Google Sites
+   - Create pages or use Embed → Embed code for each HTML file’s <body> inner content,
+     OR host these files on Firebase Hosting / GitHub Pages and link from your Site.
+   - If you embed fragments only, keep the <style> block with each embed or use a single
+     Sites “Custom CSS” / theme if available.
+
+2. Play Console
+   - App content → Privacy policy: URL to privacy-policy.html (public URL).
+   - Data safety: use data-safety.html as a drafting aid; enter answers in the form.
+   - Account deletion: URL to delete-account.html per current policy.
+
+3. Firebase Hosting (optional)
+   - Copy the contents of docs/play_store/website/ to the folder configured in firebase.json
+     (e.g. play_store_compliance) and deploy so all nav links work.
