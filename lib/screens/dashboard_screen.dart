@@ -52,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               backgroundColor: _surfaceCard,
               title: const Text(
-                'AI CV analysis',
+                'CV analysis',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: _deep, fontWeight: FontWeight.bold),
               ),
