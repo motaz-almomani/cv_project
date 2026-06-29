@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// PDF export layout: [modern], [classic], or [minimal].
 class CVModel {
   String id;
   String userId;
   String cvName;
-  /// Layout id for PDF export.
   String pdfTemplate;
   int createdAtMs;
   int updatedAtMs;
